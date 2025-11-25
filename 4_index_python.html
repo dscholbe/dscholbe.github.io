@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santa Race Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .track {
+            background: #90EE90;
+            border: 3px solid #228B22;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .lane {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            padding: 10px;
+            position: relative;
+        }
+        .santa-name {
+            width: 100px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
+        }
+        .race-path {
+            flex: 1;
+            height: 40px;
+            background: linear-gradient(to right, #fff 0%, #fff 98%, #ff4444 98%, #ff4444 100%);
+            border: 2px solid #666;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        .santa {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 30px;
+            transition: left 0.1s ease-out;
+            will-change: left;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+        button:hover:not(:disabled) {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .winner-announcement {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff4444;
+            margin-top: 20px;
+            min-height: 30px;
+        }
+        .results {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+        .results.show {
+            display: block;
+        }
+        .results h2 {
+            text-align: center;
+            color: #333;
+            margin-top: 0;
+        }
+        .result-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .place {
+            font-size: 24px;
+            font-weight: bold;
+            width: 60px;
+            text-align: center;
+        }
+        .santa-result-name {
+            flex: 1;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎅 Santa Race Viewer 🎅</h1>
+        
+        <div class="track" id="track"></div>
+
+        <div class="controls">
+            <button id="viewBtn" onclick="viewRace()">View Race</button>
+        </div>
+
+        <div class="winner-announcement" id="winner"></div>
+
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        // PASTE YOUR RACE DATA HERE
+        // Copy the entire contents of santa_race.json and paste it below
+        const raceData = {
+            "movements": [
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.06428268309256176
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.22789185286454444
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.047198784646040895
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.24295669325021127
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.23238988653961182
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.03318171875195315
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.23563893516381473
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.07459587076799466
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.04488890908496886
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.20167590267321173
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.20399060895240634
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.04775726982447358
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.24832924865017728
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.20049073335741768
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.1373224269480671
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.22517084701065931
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.09254764865746037
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.20459978561339995
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.02476674766207603
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.19521580200085897
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.23812803409409083
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.08461622982318971
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.14273504203737727
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.11563850641738568
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.2098971414485648
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.08121479916668804
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.07552099940741423
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.15568859754749292
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.13947435087829166
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.18941286116967468
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.23209601758661882
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.24881257615380864
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.055857533513674146
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.16248328696402106
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.1467414704317594
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.057085463537949716
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.17127720839190205
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.14429920452846573
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.03418586196943112
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.1810509654998177
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.1074495672497536
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.1650770904336422
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.12125468873758709
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.24698185409560403
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.03248198516273029
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.16580463695647468
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.06532050875131949
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.14752895404073577
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.028219504989616156
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.03696731907654194
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.09940408056160052
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.020770007694191486
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.030911122066090556
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.22787016179065708
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.22021011026075593
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.17984875760487107
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.15623975191450018
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.025117902933432655
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.207792355463909
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.19171696542158212
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.17663045283798448
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.06721944521037475
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.08154288919454095
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.2255474257775467
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.1074516391810668
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.19648691635341087
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.10369905913307101
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.030763706169963233
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.06381451817708643
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.17348065516892136
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.2427713604186398
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.037441705259975325
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.09974264145642919
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.10607056531044909
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.06373300752824794
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.12524197212152272
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.2057448843275615
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.19785041514735763
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.03426835331138147
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.2188494479712919
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.16400359494486325
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.03895187839789188
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.17456961605982135
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.07124002491118792
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.08496248787515429
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.09140829894775022
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.12256417044200053
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.10722842498991218
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.07709021491082547
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.2042951193501519
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.13089866777431056
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.15441795427630478
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.058235977393843855
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.19788253843237627
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.20066219463806942
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.13874552248269675
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.024030399954632596
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.13699917950689003
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.09149413373998297
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.17878729179875644
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.2263432189370224
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.06451750551282827
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.20687941076174746
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.06083688288016785
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.18903580719626287
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.20374094219780278
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.06396023388729527
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.042279552193899936
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.07603777619783263
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.18391063214561199
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.06364629242141713
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.09898113309730247
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.11061937031351927
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.17827301535743906
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.16750283063319385
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.046402154759408565
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.02858750391282521
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.03474618460548511
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.0764031697560657
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.03692074132985777
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.10325650750293794
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.07054214728341317
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.04352082876791548
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.045149329570465135
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.1959014512497277
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.09853230765745621
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.15385042355786774
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.23681141466143052
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.03329280961283539
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.0897437054927254
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.04486215968074364
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.14683089499692858
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.07804748299255469
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.12907703898328418
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.06449012987829907
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.11042187643218687
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.10230727545283996
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.1733693972039158
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.08561628594454854
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.1609925324449504
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.2211184720302559
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.07403913734779091
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.09167644791005325
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.21880750177176514
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.199657487301536
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.1462706274615213
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.026862410316381764
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.08586391708977852
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.2013206813472221
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.15345624672062697
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.1128071686551819
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.23847651711066772
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.10556435705421005
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.10465249506009813
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.05460149481868888
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.17052093467364426
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.23565433250288603
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.19093529315724453
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.22475795939468382
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.052179009872364845
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.08786242279611499
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.2069451956461845
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.16158489312247656
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.06958499273093269
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.049851186964617156
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.1923374518669915
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.24137516207458498
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.23529340380207697
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.03218665063060289
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.02481156785813277
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.23475655642464013
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.15110396333847145
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.2390800974138414
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.023669514846948094
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.23160602451358622
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.15511572105216553
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.22981301992617809
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.12207985108775478
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.09689694609883893
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.10216431645423733
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.234159202282198
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.1993691032930743
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.13310999520495745
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.16265504652995885
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.05345210269483085
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.12274955494239974
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.2392348251330124
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.16238508813223201
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.050182375636362804
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.23295576787466313
+                }
+                ],
+                [
+                {
+                    "id": "santa1",
+                    "move": 0.011532931756657927
+                },
+                {
+                    "id": "santa2",
+                    "move": 0.07673378999884004
+                },
+                {
+                    "id": "santa3",
+                    "move": 0.15666783353113262
+                },
+                {
+                    "id": "santa4",
+                    "move": 0.11715814511403981
+                },
+                {
+                    "id": "santa5",
+                    "move": 0.20961959545479725
+                },
+                {
+                    "id": "santa6",
+                    "move": 0.15024401302897802
+                },
+                {
+                    "id": "santa7",
+                    "move": 0.19087845214246113
+                },
+                {
+                    "id": "santa8",
+                    "move": 0.04427732886345338
+                },
+                {
+                    "id": "santa9",
+                    "move": 0.06869829379727571
+                },
+                {
+                    "id": "santa10",
+                    "move": 0.09218656668278123
+                }
+                ]
+            ]
+            };
+
+        let santas = [];
+        let raceInterval = null;
+        let isPlaying = false;
+        const raceSpeed = 400;
+        const goal = 3;
+
+        function setupRace() {
+            const santaNames = {
+                'santa1': 'An',
+                'santa2': 'Dad / Uncle Chris',
+                'santa3': 'Dawson',
+                'santa4': 'Donny',
+                'santa5': 'Katherine',
+                'santa6': 'Linda',
+                'santa7': 'Maggie',
+                'santa8': 'Mom / Me Tuan',
+                'santa9': 'Owain',
+                'santa10': 'Xuyen'
+            };
+            
+            const firstRound = raceData.movements[0];
+            santas = firstRound.map(m => ({
+                id: m.id,
+                name: santaNames[m.id] || m.id,
+                position: 0
+            }));
+
+            const trackDiv = document.getElementById('track');
+            trackDiv.innerHTML = '';
+
+            santas.forEach(santa => {
+                const lane = document.createElement('div');
+                lane.className = 'lane';
+                lane.innerHTML = `
+                    <div class="santa-name">${santa.name}</div>
+                    <div class="race-path">
+                        <div class="santa" id="${santa.id}">🎅</div>
+                    </div>
+                `;
+                trackDiv.appendChild(lane);
+            });
+        }
+
+        function viewRace() {
+            if (isPlaying) return;
+            
+            // Reset positions
+            santas.forEach(santa => {
+                santa.position = 0;
+                document.getElementById(santa.id).style.left = '0%';
+            });
+            
+            isPlaying = true;
+            document.getElementById('viewBtn').disabled = true;
+            document.getElementById('winner').textContent = '';
+            document.getElementById('results').classList.remove('show');
+            
+            let frame = 0;
+            let raceFinished = false;
+
+            raceInterval = setInterval(() => {
+                if (frame >= raceData.movements.length || raceFinished) {
+                    clearInterval(raceInterval);
+                    isPlaying = false;
+                    document.getElementById('viewBtn').disabled = false;
+                    displayResults();
+                    return;
+                }
+                
+                const movements = raceData.movements[frame];
+                movements.forEach(move => {
+                    const santa = santas.find(s => s.id === move.id);
+                    // Only move santa if they haven't crossed the finish line yet
+                    if (santa && santa.position < goal) {
+                        santa.position += move.move;
+                        const santaElement = document.getElementById(santa.id);
+                        const percentage = (santa.position / goal) * 95;
+                        santaElement.style.left = Math.min(percentage, 95) + '%';
+                        
+                        // Check if this santa just crossed the finish line
+                        if (santa.position >= goal && !raceFinished) {
+                            raceFinished = true;
+                        }
+                    }
+                });
+                
+                frame++;
+            }, raceSpeed);
+        }
+
+        function displayResults() {
+            // Sort santas by position (closest to finish line first)
+            const sortedSantas = [...santas].sort((a, b) => b.position - a.position);
+            
+            const winner = sortedSantas[0];
+            // document.getElementById('winner').textContent = `🏆 ${winner.name} wins! 🏆`;
+
+            const resultsDiv = document.getElementById('results');
+            const ordinals = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'];
+            const medals = ['', '', '', '', '', '', '', '', '', ''];
+            
+            let resultsHTML = '<h2>Final Results</h2>';
+            sortedSantas.forEach((santa, index) => {
+                resultsHTML += `
+                    <div class="result-item">
+                        <div class="place">${medals[index]} ${ordinals[index]}</div>
+                        <div class="santa-result-name">${santa.name}</div>
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = resultsHTML;
+            resultsDiv.classList.add('show');
+        }
+
+        // Initialize race on page load
+        setupRace();
+    </script>
+</body>
+</html>
