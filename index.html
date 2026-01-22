@@ -3,33 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Page</title>
+    <title>Dawson Scholbe</title>
     <style>
-        body {
+        * {
             margin: 0;
-            padding: 20px;
-            font-family: "Courier New", monospace;
-            background-color: #292d3e;
-            color: #bfc7d5
+            padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+            line-height: 1.6;
+            color: #2d2d2d;
+            background: linear-gradient(135deg, #fef5ed 0%, #f8f4f0 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+
+        header {
+            text-align: left;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #e8975e;
+        }
+
         h1 {
-            text-align: center;
-            color: #bfc7d5;
-            font-weight: 100;
-            font-size:50px;
-            margin-left: -50px;
+            font-size: 3em;
+            font-weight: 600;
+            color: #d97742;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
         }
-        h4 {
-            text-align: center;
-            color: #bfc7d5;
-            font-size: 16px;
-            font-weight: 10;
-            margin-left: -50px;
+
+        .subtitle {
+            font-size: 1.3em;
+            color: #6b5d4f;
+            font-weight: 400;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: flex-start;
+            gap: 25px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .contact-info a {
+            color: #5a8f5e;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .contact-info a:hover {
+            color: #3d6e41;
+        }
+
+        section {
+            margin-bottom: 45px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            color: #8b5a3c;
+            margin-bottom: 20px;
+            font-weight: 600;
+            border-left: 4px solid #d97742;
+            padding-left: 15px;
+        }
+
+        .about {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid #5a8f5e;
+        }
+
+        .experience-item, .education-item {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .experience-item:hover, .education-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(217, 119, 66, 0.15);
+        }
+
+        h3 {
+            color: #d97742;
+            font-size: 1.4em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .job-title, .degree {
+            color: #6b5d4f;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .date {
+            color: #5a8f5e;
+            font-size: 0.95em;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, #5a8f5e, #4a7d4e);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            transition: transform 0.2s;
+        }
+
+        .skill-tag:hover {
+            transform: scale(1.05);
+        }
+
+        ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #4a4a4a;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.2em;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .container {
+                padding: 30px 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Dawson Scholbe</h1>
-    <h4>Data Scientist @ GDMS</h4>
+    <div class="container">
+        <header>
+            <h1>Dawson Scholbe</h1>
+            <!-- <p class="subtitle">Data Scientist</p> -->
+            <div class="contact-info">
+                <!-- <a href="mailto:your.email@example.com">your.email@example.com</a> -->
+                <!-- <a href="tel:+1234567890">+1 (234) 567-890</a> -->
+                <a href="https://www.linkedin.com/in/dscholbe/" target="_blank">LinkedIn</a>
+                <a href="https://github.com/dscholbe" target="_blank">GitHub</a>
+            </div>
+        </header>
+
+        <!-- <section>
+            <h2>About Me</h2>
+            <div class="about">
+                <p>Passionate professional with expertise in [your field]. Dedicated to delivering innovative solutions and driving meaningful results. With a strong foundation in [key skills], I bring a unique blend of technical expertise and creative problem-solving to every project.</p>
+            </div>
+        </section> -->
+
+        <section>
+            <h2>Experience</h2>
+            <div class="experience-item">
+                <h3>General Dynamics Mission Systems</h3>
+                <div class="job-title">Data Scientist</div>
+                <div class="date">January 2025 - Present</div>
+                <ul>
+                    <li>Implemented machine learning models including decision trees, time series forecasting</li>
+                    <li>Built data pipelines to ingest data via APIs into a database for modeling and reporting</li>
+                    <li>Experimented with Snowflake document intelligence</li>
+                </ul>
+            </div>
+
+            <div class="experience-item">
+                <h3>General Dynamics Mission Systems</h3>
+                <div class="job-title">Business Intelligence Developer</div>
+                <div class="date">June 2017 - January 2025</div>
+                <ul>
+                    <li>Developed end-to-end business intelligence products leveraging analytics tools such as MicroStrategy and Power BI</li>
+                    <li>Consulted with internal stakeholders and developers to provide requirements and development suggestions</li>
+                    <li>Administered analytics platform for access, collaboration, and automation</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Education</h2>
+            <div class="education-item">
+                <h3>Virginia Tech</h3>
+                <div class="degree">Bachelor of Science in Business Information Technology: Decision Support Systems</div>
+                <div class="date">Graduated 2017</div>
+                <!-- <p>Relevant coursework, honors, or achievements</p> -->
+            </div>
+        </section>
+
+        <section>
+            <h2>Skills</h2>
+            <div class="skills">
+                <span class="skill-tag">Python</span>
+                <span class="skill-tag">SQL</span>
+                <span class="skill-tag">Power BI</span>
+                <span class="skill-tag">PowerShell</span>
+                <span class="skill-tag">Data Science</span>
+                <span class="skill-tag">Data Engineering</span>
+            </div>
+        </section>
+    </div>
 </body>
 </html>
